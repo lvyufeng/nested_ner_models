@@ -38,7 +38,7 @@
         | SET|    数据集   |   616 |
         | SYS|    系统     |   876 |
         | TECH|   技术     |   1879 |
-        \
+        
         使用基本的Bi-LSTM+CRF跑出的效果如下:
         ![alt 属性文本](figures/noisy_result.jpg)
     1. 新的实体类型定义如下：
