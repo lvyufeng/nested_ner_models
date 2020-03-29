@@ -1,18 +1,36 @@
-# 嵌套命名实体识别模型合集
+# CNKI摘要数据构造NER数据集
 
-由于项目和研究需要，要从论文（目前主要为计算机领域）中提取具有高度嵌套或复合名词的命名实体，传统Bi-LSTM+CRF在自建数据集的F1仅有60%左右。（虽然数据集标注的也有些问题）
+## 抓取CNKI摘要
 
-下面根据近两年ArXiv和ACL出现过的Nested NER论文进行复现，看一下在自建数据集上的性能如何。
+[爬虫仓库](https://github.com/lvyufeng/cnki_paper_crawler)
 
-## 自建数据集
-1. 共来自于CCF旗下13个刊物
 
-1. 由CNKI抓取，仅包含论文摘要（全文有版权问题）
+## 旧的自建数据集的一些预处理
+由于之前做过数据集标注，虽然有很多错误，而且新定义了类型和规则，但是之前的数据处理后也可以使用。以下为处理步骤
 
-1. 目前仅标注了6000余条数据，后续重新标注后公开
-
-## Nested NER 论文
-
-1. [A Neural Layered Model for Nested Named Entity Recognition](https://github.com/meizhiju/layered-bilstm-crf) NAACL 2018
-
-1. [Merge and Label: A novel neural network architecture for nested NER](https://github.com/fishjh2/merge_label) ACL2019
+1. 把BIO表示重新处理为JSON
+    ```
+    {
+        'entity':'长短时记忆网络',
+        'text':'针对现有基于视频整体序列结构建模的行为识别方法中,存在的大量时空背景混杂信息,而引起的行为表达的判决能力低,行为类别错误判定的问题,提出一种基于双流特征的时空关注度长短时记忆网络模型。'
+        'begin':82,
+        'end':88,
+    }
+    ```
+1. 归类实体，剔除不需要的类型
+    1. 旧的类型包括：
+        ALG:    算法        6855
+        APPD:   应用领域    1064
+        ARCH:   架构/结构   247
+        CHAR:   特征/特性   2297
+        EVI:    评价指标    2805
+        EVM:    评价方法    142
+        FRA:    框架        255
+        MDL:    模型        3100
+        OPQ:    开放问题    2260
+        SET:    数据集      616
+        SYS:    系统        876
+        TECH:   技术        1879
+        \
+        使用基本的Bi-LSTM+CRF跑出的效果如下:
+        ![alt 属性文本](figures/noisy_result.jpg)
