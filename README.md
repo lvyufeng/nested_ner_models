@@ -1,18 +1,58 @@
-# 嵌套命名实体识别模型合集
+# Source code of Boundary-aware Model for Nested NER
 
-由于项目和研究需要，要从论文（目前主要为计算机领域）中提取具有高度嵌套或复合名词的命名实体，传统Bi-LSTM+CRF在自建数据集的F1仅有60%左右。（虽然数据集标注的也有些问题）
 
-下面根据近两年ArXiv和ACL出现过的Nested NER论文进行复现，看一下在自建数据集上的性能如何。
+# Requirements
+* `python 3`
+* `pytorch`
+* `numpy`
+* `gensim`
+* `scikit-learn`
+* `joblib`
 
-## 自建数据集
-1. 共来自于CCF旗下13个刊物
+# Data Format
+Our processed `GENIA` dataset is in `./data/genia`.
 
-1. 由CNKI抓取，仅包含论文摘要（全文有版权问题）
+The data format is the same as in [Neural Layered Model, Ju et al. 2018 NAACL](https://github.com/meizhiju/layered-bilstm-crf) 
+>Each line has multiple columns separated by a tab key. 
+>Each line contains
+>```
+>word	label1	label2	label3	...	labelN
+>```
+>The number of labels (`N`) for each word is determined by the maximum nested level in the data set. `N=maximum nested level + 1`
+>Each sentence is separated by an empty line.
+>For example, for these two sentences, `John killed Mary's husband. He was arrested last night` , they contain four entities: John (`PER`), Mary(`PER`), Mary's husband(`PER`),He (`PER`).
+>The format for these two sentences is listed as following:
+>```
+>John    B-PER   O   O
+>killed  O   O   O
+>Mary    B-PER   B-PER   O
+>'s  O   I-PER   O
+>husband O   I-PER   O
+>.   O   O   O
+>
+>He    B-PER   O   O
+>was  O   O   O
+>arrested  O   O   O
+>last  O   O   O
+>night  O   O   O
+>.  O   O   O
+>```
 
-1. 目前仅标注了6000余条数据，后续重新标注后公开
+# Pre-trained word embeddings
+* [Pre-trained word embeddings](https://drive.google.com/open?id=0BzMCqpcgEJgiUWs0ZnU0NlFTam8) used here is the same as in [Neural Layered Model](https://github.com/meizhiju/layered-bilstm-crf) 
 
-## Nested NER 论文
+# Setup
+Download pre-trained embedding above, unzip it, and place `PubMed-shuffle-win-30.bin` into `./data/embedding/`
 
-1. [A Neural Layered Model for Nested Named Entity Recognition](https://github.com/meizhiju/layered-bilstm-crf) NAACL 2018
+# Usage
+## Training
 
-1. [Merge and Label: A novel neural network architecture for nested NER](https://github.com/fishjh2/merge_label) ACL2019
+```sh
+python3 train.py
+```
+trained model will saved at `./data/model/`
+## Testing
+ set `model_url` to the url of saved model in training in `main()` of `eval.py`
+```sh
+python3 eval.py
+```
