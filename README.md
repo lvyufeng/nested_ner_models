@@ -4,7 +4,8 @@
 1. 机器之心AI术语库
 2. 医疗人工智能知识图谱
 3. AMiner KnowledgeGraph
-    1. DataMining
-    2. KG
-    3. MachineLearning
-    4. SciKG
+    - DataMining
+    - KG
+    - MachineLearning
+    - SciKG
+4. 第一轮NER标注后获得的实体词典
